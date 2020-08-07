@@ -1,0 +1,111 @@
+<! DOCTYPE html>
+<html>
+<head>
+    <title>Mari</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/Logo4.png">
+    <link rel="stylesheet" type="text/css" href="css/css.css">
+    <link rel="stylesheet" type="text/css" href="css/geral.css">
+
+
+
+</head>
+<body>
+
+    <nav class="bg-dark-1">
+        <div>
+            <a href="#inicio"><button class="btn bg-transparent text-white">Início</button></a>
+        </div>
+        <img src="img/Logo4.png" alt="logo do site">
+    </nav>
+
+    <header class="inicio">
+        <div class="h-direita"></div>
+        <div class="h-esquerda"></div>
+        <div class="h-content">
+            <div class="">
+                <p class="text-white">Salve suas fotos em links providos pelo IMGUR</p>
+            </div>
+            
+            <img src="img/loading/loading.gif" alt="" width="280" >
+            
+        </div>
+    </header>
+
+
+<div id="meio">
+    
+        <form id= "upload-form" action="" method="post" enctype="multipart/form-data" >
+            <input type= "file" name="file" id="file">
+            <input type= "submit" value="Upload da sua imagem" name="submit">
+        </form>
+    
+
+    <div id="gallery">
+        <!--images-->
+    </div>
+
+</div>
+
+
+
+<script type="text/javascript">
+
+const CLIENT_ID = 'fdb5edb23074fe8';
+
+const doUpload = (url, options) => {
+    const promiseCallback = (resolve, reject) => {
+        fetch(url, options)
+        .then(response => response.json())
+        .then(resolve)
+        .catch(reject);
+    };
+    return new Promise(promiseCallback);
+};
+
+
+const addImage = (url) => {
+     const gallery = document.getElementById('gallery');
+     gallery.innerHTML += `<img src="${url}" width="300"/>`
+     
+};
+
+const onSuccess = (result) => {
+    const {data:{link}} = result;
+    addImage(link);
+};
+
+const uploadImage = (e) =>{
+    e.preventDefault();
+
+    const file = document.getElementById('file');
+
+    const data = new FormData();
+    data.append('image', file.files[0]);
+
+    // Upload
+
+    doUpload('https://api.imgur.com/3/image', {
+        method: 'POST',
+        body: data,
+        headers: {
+            'Authorization' : `Client-ID ${CLIENT_ID}`,
+        }
+    })
+    .then(onSuccess)
+    .catch(console.error);
+
+}
+
+const form = document.getElementById('upload-form');
+form.addEventListener('submit', uploadImage)
+
+</script>
+
+        <footer class="container bg-dark-1">
+            <img src="img/Logo4.png" alt="" srcset="" >    
+            <p class="text-white">© 2020 Copyright</p>  
+        </footer>
+</body>
+</html>
